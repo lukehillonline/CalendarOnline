@@ -103,14 +103,21 @@
 
 		displayEvents: function(events) {
 			for(var e=0;e<events.length;e++) {
-				var eventStartDate = events[e].startDate,
-					eventEndDate = events[e].endDate,
-					eventClassName = events[e].className;
+				var eventStartDate = moment(events[e].startDate, "DD-MM-YYYY"),
+					eventEndDate = moment(events[e].endDate, "DD-MM-YYYY"),
+					eventClassName = events[e].className,
+					duration = eventEndDate.diff(eventStartDate, 'days'),
+					nextDay = moment(eventStartDate, "DD-MM-YYYY").add('days', 1);
 
-				var nextDay = moment(eventStartDate, "DD-MM-YYYY").add('days', 1);
+				this.element.find('[data-date="'+eventStartDate._i+'"]').addClass(eventClassName);
 
-				this.element.find('[data-date="'+eventStartDate+'"]').addClass(eventClassName);
-				this.element.find('[data-date="'+eventEndDate+'"]').addClass(eventClassName);
+				for (var i = duration - 1; i >= 0; i--) {
+					var nextDayString = moment(nextDay).format("DD-MM-YYYY");
+					this.element.find('[data-date="'+nextDayString+'"]').addClass(eventClassName);
+					nextDay = moment(nextDay, "DD-MM-YYYY").add('days', 1);
+				};
+				
+				this.element.find('[data-date="'+eventEndDate._i+'"]').addClass(eventClassName);
 			}
 		}
 
